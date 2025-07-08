@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aplikasi Penanda Gambar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Style kustom untuk tag yang dibuat */
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        background-color: #e0e7ff; /* bg-indigo-100 */
+        color: #3730a3; /* text-indigo-800 */
+        padding: 4px 8px;
+        border-radius: 9999px; /* rounded-full */
+        font-size: 0.875rem; /* text-sm */
+        margin-right: 0.5rem; /* mr-2 */
+        margin-bottom: 0.5rem; /* mb-2 */
+      }
+      .tag-remove {
+        margin-left: 0.5rem; /* ml-2 */
+        cursor: pointer;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gray-100 font-sans flex items-center justify-center min-h-screen p-4"
+  >
+    <div
+      id="app-container"
+      class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-5xl transition-all duration-500"
+    >
+      <div id="file-selection-step">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+          Aplikasi Penanda Gambar
+        </h1>
+        <p class="text-gray-600 mb-6">
+          Pilih folder atau beberapa file gambar untuk memulai proses penandaan.
+        </p>
+        <div
+          class="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center"
+        >
+          <label for="file-input" class="cursor-pointer">
+            <svg
+              class="mx-auto h-12 w-12 text-gray-400"
+              stroke="currentColor"
+              fill="none"
+              viewBox="0 0 48 48"
+              aria-hidden="true"
+            >
+              <path
+                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <span
+              class="mt-2 block text-sm font-medium text-blue-600 hover:text-blue-500"
+              >Pilih file gambar</span
+            >
+            <p class="text-xs text-gray-500 mt-1">PNG, JPG, GIF, WEBP, dll.</p>
+          </label>
+          <input
+            id="file-input"
+            type="file"
+            class="sr-only"
+            multiple
+            accept="image/*"
+          />
+        </div>
+        <p id="file-count" class="text-center text-gray-500 mt-4"></p>
+      </div>
+
+      <div id="tagging-step" class="hidden">
+        <div class="grid md:grid-cols-2 gap-x-8 gap-y-4">
+          <div
+            class="flex flex-col items-center justify-center bg-gray-50 rounded-lg p-4 h-full md:row-span-2"
+          >
+            <p
+              id="image-counter"
+              class="text-sm font-medium text-gray-500 mb-2 self-start"
+            ></p>
+            <img
+              id="image-preview"
+              src=""
+              alt="Preview Gambar"
+              class="max-w-full max-h-[400px] object-contain rounded-lg shadow-md"
+            />
+            <p
+              id="filename-display"
+              class="mt-3 text-sm text-gray-700 font-mono break-all text-center"
+            ></p>
+          </div>
+
+          <div class="flex flex-col justify-center space-y-3">
+            <h2 class="text-xl font-bold text-gray-800 mb-2">
+              Berikan Identitas pada Gambar
+            </h2>
+
+            <div>
+              <label
+                for="tipe-input"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Tipe</label
+              >
+              <input
+                type="text"
+                id="tipe-input"
+                placeholder="Contoh: onomatopoeia"
+                class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label
+                for="sound-input"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Sound</label
+              >
+              <input
+                type="text"
+                id="sound-input"
+                placeholder="Contoh: Loudness"
+                class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label
+                for="vokal-input"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Vokal</label
+              >
+              <select
+                id="vokal-input"
+                class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">-- Pilih Vokal --</option>
+                <option value="Byur">Byur</option>
+                <option value="Duuttt">Duuttt</option>
+                <option value="Gluduk Gluduk Gluduk">
+                  Gluduk Gluduk Gluduk
+                </option>
+                <option value="Gonggg">Gonggg</option>
+                <option value="Thing">Thing</option>
+                <option value="Tok Tok Tok">Tok Tok Tok</option>
+              </select>
+            </div>
+            <div>
+              <label
+                for="tipe-font-input"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Tipe Font</label
+              >
+              <select
+                id="tipe-font-input"
+                class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">-- Pilih Tipe Font --</option>
+                <option value="Serif">Serif</option>
+                <option value="San-serif">San-serif</option>
+                <option value="Handwriting">Handwriting</option>
+                <option value="Script">Script</option>
+                <option value="Monospace">Monospace</option>
+                <option value="Display">Display</option>
+                <option value="Dekoratif">Dekoratif</option>
+              </select>
+            </div>
+            <div>
+              <label
+                for="ketebalan-font-input"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Ketebalan Font</label
+              >
+              <select
+                id="ketebalan-font-input"
+                class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">-- Pilih Ketebalan --</option>
+                <option value="Tebal">Tebal</option>
+                <option value="Tipis">Tipis</option>
+                <option value="Miring">Miring</option>
+              </select>
+            </div>
+            <div>
+              <label
+                for="efek-visual-input"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Efek Visual</label
+              >
+              <input
+                type="text"
+                id="efek-visual-input"
+                placeholder="Contoh: Mengelegar"
+                class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label
+                for="warna-input"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Warna (ketik lalu tekan Enter)</label
+              >
+              <input
+                type="text"
+                id="warna-input"
+                placeholder="Contoh: Oranye"
+                class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+              />
+              <div id="warna-tags-container" class="mt-2"></div>
+            </div>
+            <div>
+              <label
+                for="tag-bebas-input"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Tag bebas (ketik lalu tekan Enter)</label
+              >
+              <input
+                type="text"
+                id="tag-bebas-input"
+                placeholder="Contoh: cepat"
+                class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+              />
+              <div id="tag-bebas-container" class="mt-2"></div>
+            </div>
+          </div>
+          <div class="md:col-span-2 flex justify-between items-center mt-4">
+            <button
+              id="prev-button"
+              class="bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors"
+            >
+              Sebelumnya
+            </button>
+            <button
+              id="next-button"
+              class="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Selanjutnya
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="result-step" class="hidden">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Hasil Penandaan</h2>
+        <p class="text-gray-600 mb-4">
+          Berikut adalah hasil dari semua data yang telah Anda masukkan. Anda
+          bisa mengedit teks di bawah ini sebelum mengunduhnya.
+        </p>
+        <textarea
+          id="result-text"
+          rows="15"
+          class="w-full p-3 border border-gray-300 rounded-md font-mono text-sm focus:ring-2 focus:ring-blue-500"
+        ></textarea>
+        <div class="mt-6 flex flex-col sm:flex-row gap-4">
+          <button
+            id="back-to-tagging-button"
+            class="w-full sm:w-auto bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors"
+          >
+            Kembali Mengedit
+          </button>
+          <button
+            id="download-button"
+            class="w-full sm:w-auto bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition-colors"
+          >
+            Unduh File .txt
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // --- Referensi Elemen DOM ---
+      const fileSelectionStep = document.getElementById("file-selection-step");
+      const taggingStep = document.getElementById("tagging-step");
+      const resultStep = document.getElementById("result-step");
+
+      const fileInput = document.getElementById("file-input");
+      const fileCount = document.getElementById("file-count");
+
+      const imagePreview = document.getElementById("image-preview");
+      const imageCounter = document.getElementById("image-counter");
+      const filenameDisplay = document.getElementById("filename-display");
+
+      const tipeInput = document.getElementById("tipe-input");
+      const warnaInput = document.getElementById("warna-input");
+      const warnaTagsContainer = document.getElementById(
+        "warna-tags-container"
+      );
+      const soundInput = document.getElementById("sound-input");
+      const vokalInput = document.getElementById("vokal-input");
+      const tipeFontInput = document.getElementById("tipe-font-input");
+      const ketebalanFontInput = document.getElementById(
+        "ketebalan-font-input"
+      );
+      const efekVisualInput = document.getElementById("efek-visual-input");
+      const tagBebasInput = document.getElementById("tag-bebas-input");
+      const tagBebasContainer = document.getElementById("tag-bebas-container");
+
+      const prevButton = document.getElementById("prev-button");
+      const nextButton = document.getElementById("next-button");
+
+      const resultText = document.getElementById("result-text");
+      const downloadButton = document.getElementById("download-button");
+      const backToTaggingButton = document.getElementById(
+        "back-to-tagging-button"
+      );
+
+      // --- State Aplikasi ---
+      let imageFiles = [];
+      let tagsData = [];
+      let currentIndex = 0;
+
+      // --- Fungsi untuk membuat elemen tag ---
+      function createTag(text, container) {
+        const tag = document.createElement("div");
+        tag.className = "tag";
+        tag.textContent = text;
+
+        const removeBtn = document.createElement("span");
+        removeBtn.className = "tag-remove";
+        removeBtn.innerHTML = "&times;";
+        removeBtn.onclick = () => tag.remove();
+        tag.appendChild(removeBtn);
+        container.appendChild(tag);
+      }
+
+      // --- Fungsi untuk menangani input tag (Warna dan Tag Bebas) ---
+      function setupTagInput(inputElement, containerElement) {
+        inputElement.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            const value = inputElement.value.trim();
+            if (value) {
+              createTag(value, containerElement);
+              inputElement.value = "";
+            }
+          }
+        });
+      }
+
+      setupTagInput(warnaInput, warnaTagsContainer);
+      setupTagInput(tagBebasInput, tagBebasContainer);
+
+      // --- Event Listener untuk Pemilihan File ---
+      fileInput.addEventListener("change", (e) => {
+        if (e.target.files.length > 0) {
+          imageFiles = Array.from(e.target.files);
+          tagsData = imageFiles.map((file) => ({
+            filename: file.name,
+            tipe: "",
+            warna: [],
+            sound: "",
+            vokal: "",
+            tipeFont: "",
+            ketebalanFont: "",
+            efekVisual: "",
+            tagBebas: [],
+          }));
+          fileCount.textContent = `${imageFiles.length} gambar terpilih. Siap untuk memulai.`;
+          startTagging();
+        }
+      });
+
+      function startTagging() {
+        if (imageFiles.length === 0) return;
+        fileSelectionStep.classList.add("hidden");
+        taggingStep.classList.remove("hidden");
+        resultStep.classList.add("hidden");
+        currentIndex = 0;
+        displayImageAndTags(currentIndex);
+      }
+
+      // --- Fungsi untuk Menampilkan Gambar dan Tag yang Tersimpan ---
+      function displayImageAndTags(index) {
+        const file = imageFiles[index];
+        const data = tagsData[index];
+
+        imagePreview.src = URL.createObjectURL(file);
+        imagePreview.onload = () => URL.revokeObjectURL(imagePreview.src);
+        filenameDisplay.textContent = data.filename;
+        imageCounter.textContent = `Gambar ${index + 1} dari ${
+          imageFiles.length
+        }`;
+
+        tipeInput.value = data.tipe;
+        soundInput.value = data.sound;
+        vokalInput.value = data.vokal;
+        tipeFontInput.value = data.tipeFont;
+        ketebalanFontInput.value = data.ketebalanFont;
+        efekVisualInput.value = data.efekVisual;
+
+        warnaTagsContainer.innerHTML = "";
+        data.warna.forEach((color) => createTag(color, warnaTagsContainer));
+
+        tagBebasContainer.innerHTML = "";
+        data.tagBebas.forEach((tag) => createTag(tag, tagBebasContainer));
+
+        updateNavigationButtons();
+      }
+
+      // --- Fungsi untuk Menyimpan Data dari Form ke State ---
+      function saveCurrentTags() {
+        if (!tagsData[currentIndex]) return;
+
+        tagsData[currentIndex].tipe = tipeInput.value;
+        tagsData[currentIndex].sound = soundInput.value;
+        tagsData[currentIndex].vokal = vokalInput.value;
+        tagsData[currentIndex].tipeFont = tipeFontInput.value;
+        tagsData[currentIndex].ketebalanFont = ketebalanFontInput.value;
+        tagsData[currentIndex].efekVisual = efekVisualInput.value;
+
+        tagsData[currentIndex].warna = Array.from(
+          warnaTagsContainer.children
+        ).map((tag) => tag.firstChild.textContent);
+        tagsData[currentIndex].tagBebas = Array.from(
+          tagBebasContainer.children
+        ).map((tag) => tag.firstChild.textContent);
+      }
+
+      function updateNavigationButtons() {
+        prevButton.disabled = currentIndex === 0;
+        prevButton.classList.toggle("opacity-50", currentIndex === 0);
+
+        if (currentIndex === imageFiles.length - 1) {
+          nextButton.textContent = "Selesai & Lihat Hasil";
+          nextButton.classList.add("bg-green-600", "hover:bg-green-700");
+          nextButton.classList.remove("bg-blue-600", "hover:bg-blue-700");
+        } else {
+          nextButton.textContent = "Selanjutnya";
+          nextButton.classList.remove("bg-green-600", "hover:bg-green-700");
+          nextButton.classList.add("bg-blue-600", "hover:bg-blue-700");
+        }
+      }
+
+      prevButton.addEventListener("click", () => {
+        if (currentIndex > 0) {
+          saveCurrentTags();
+          currentIndex--;
+          displayImageAndTags(currentIndex);
+        }
+      });
+
+      nextButton.addEventListener("click", () => {
+        saveCurrentTags();
+        if (currentIndex < imageFiles.length - 1) {
+          currentIndex++;
+          displayImageAndTags(currentIndex);
+        } else {
+          generateResult();
+        }
+      });
+
+      function generateResult() {
+        let output = "";
+        tagsData.forEach((data) => {
+          output += `Nama File: ${data.filename}\n`;
+          output += `Tipe: ${data.tipe || "Tidak ada"}\n`;
+          output += `Warna: ${data.warna.join(", ") || "Tidak ada"}\n`;
+          output += `Sound: ${data.sound || "Tidak ada"}\n`;
+          output += `Vokal: ${data.vokal || "Tidak ada"}\n`;
+          output += `Tipe Font: ${data.tipeFont || "Tidak ada"}\n`;
+          output += `Ketebalan Font: ${data.ketebalanFont || "Tidak ada"}\n`;
+          output += `Efek Visual: ${data.efekVisual || "Tidak ada"}\n`;
+          output += `Tag bebas: ${data.tagBebas.join(", ") || "Tidak ada"}\n`;
+          output += "---\n\n";
+        });
+
+        resultText.value = output.trim();
+        taggingStep.classList.add("hidden");
+        resultStep.classList.remove("hidden");
+      }
+
+      backToTaggingButton.addEventListener("click", () => {
+        taggingStep.classList.remove("hidden");
+        resultStep.classList.add("hidden");
+      });
+
+      downloadButton.addEventListener("click", () => {
+        const textToDownload = resultText.value;
+        const blob = new Blob([textToDownload], {
+          type: "text/plain;charset=utf-8",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "hasil_penandaan_gambar.txt";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+    </script>
+  </body>
+</html>
