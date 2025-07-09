@@ -555,9 +555,8 @@
             },
             didDrawCell: (data) => {
               if (data.section === "body" && data.column.index === 1) {
-                // Menulis nama file di atas gambar
-                doc.text(data.cell.text, data.cell.x + 2, data.cell.y + 6);
-
+                // Pustaka autoTable sudah menggambar nama file secara otomatis.
+                // Kita hanya perlu menggambar gambarnya di bawah teks tersebut.
                 const imgData = imageDataUrls[data.row.index];
                 if (imgData) {
                   const imgProps = doc.getImageProperties(imgData);
@@ -589,11 +588,10 @@
             },
             columnStyles: {
               0: { cellWidth: 10 },
-              1: { cellWidth: 60, minCellHeight: 60 }, // Beri ruang lebih untuk gambar
+              1: { cellWidth: 60, minCellHeight: 60, valign: "top" }, // Atur perataan vertikal ke atas
               2: { cellWidth: "auto" },
             },
             styles: {
-              valign: "middle",
               lineColor: [44, 62, 80], // Warna garis
             },
           });
