@@ -6,6 +6,10 @@
     <title>Aplikasi Penanda Gambar</title>
     <!-- Memuat Tailwind CSS untuk styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Memuat Pustaka untuk Membuat PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Menggunakan tautan pustaka plugin yang benar -->
+    <script src="https://unpkg.com/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.js"></script>
     <style>
       /* Style kustom untuk tag yang dibuat */
       .tag {
@@ -264,9 +268,19 @@
           >
             Unduh File .txt
           </button>
+          <button
+            id="download-pdf-button"
+            class="w-full sm:w-auto bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Unduh Tabel PDF
+          </button>
         </div>
       </div>
     </div>
+
+    <footer class="fixed bottom-0 right-0 p-4 text-sm text-gray-500">
+      Copyright &copy; Arjunnaja Abiyu Pratama 2025
+    </footer>
 
     <script>
       // --- Referensi Elemen DOM ---
@@ -300,6 +314,7 @@
 
       const resultText = document.getElementById("result-text");
       const downloadButton = document.getElementById("download-button");
+      const downloadPdfButton = document.getElementById("download-pdf-button");
       const backToTaggingButton = document.getElementById(
         "back-to-tagging-button"
       );
@@ -484,6 +499,113 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
       });
+
+      // --- Fungsi untuk Membuat PDF ---
+      // Helper function untuk membaca file sebagai Data URL
+      function readFileAsDataURL(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+
+      async function generatePdf() {
+        const button = document.getElementById("download-pdf-button");
+        button.disabled = true;
+        button.textContent = "Membuat PDF...";
+
+        try {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF();
+
+          // Membaca semua gambar sebagai Data URL
+          const imagePromises = imageFiles.map((file) =>
+            readFileAsDataURL(file)
+          );
+          const imageDataUrls = await Promise.all(imagePromises);
+
+          const tableColumns = ["No.", "Gambar Onomatopoeia", "Caption"];
+          const tableRows = [];
+
+          tagsData.forEach((data, index) => {
+            const captionText =
+              `Tipe: ${data.tipe || "-"}\n` +
+              `Warna: ${data.warna.join(", ") || "-"}\n` +
+              `Sound: ${data.sound || "-"}\n` +
+              `Vokal: ${data.vokal || "-"}\n` +
+              `Tipe Font: ${data.tipeFont || "-"}\n` +
+              `Ketebalan Font: ${data.ketebalanFont || "-"}\n` +
+              `Tag bebas: ${data.tagBebas.join(", ") || "-"}`;
+
+            tableRows.push([
+              index + 1,
+              data.filename, // Placeholder, gambar akan digambar secara manual
+              captionText,
+            ]);
+          });
+
+          // Memanggil fungsi autoTable dari instance doc
+          doc.autoTable({
+            head: [tableColumns],
+            body: tableRows,
+            theme: "grid",
+            didDrawCell: (data) => {
+              if (data.section === "body" && data.column.index === 1) {
+                // Menulis nama file di atas gambar
+                doc.text(data.cell.text, data.cell.x + 2, data.cell.y + 6);
+
+                const imgData = imageDataUrls[data.row.index];
+                if (imgData) {
+                  const imgProps = doc.getImageProperties(imgData);
+                  const cellWidth = data.cell.width - 4; // padding
+                  const cellHeight = data.cell.height - 10; // padding + ruang untuk teks nama file
+                  const imgWidth = imgProps.width;
+                  const imgHeight = imgProps.height;
+                  const ratio = Math.min(
+                    cellWidth / imgWidth,
+                    cellHeight / imgHeight
+                  );
+
+                  const finalImgWidth = imgWidth * ratio;
+                  const finalImgHeight = imgHeight * ratio;
+
+                  const x = data.cell.x + (cellWidth - finalImgWidth) / 2 + 2;
+                  const y = data.cell.y + 8; // Posisi di bawah teks filename
+
+                  doc.addImage(
+                    imgData,
+                    "PNG",
+                    x,
+                    y,
+                    finalImgWidth,
+                    finalImgHeight
+                  );
+                }
+              }
+            },
+            columnStyles: {
+              0: { cellWidth: 10 },
+              1: { cellWidth: 60, minCellHeight: 60 }, // Beri ruang lebih untuk gambar
+              2: { cellWidth: "auto" },
+            },
+            styles: {
+              valign: "middle",
+            },
+          });
+
+          doc.save("hasil_tabel_gambar.pdf");
+        } catch (error) {
+          console.error("Gagal membuat PDF:", error);
+          alert("Maaf, terjadi kesalahan saat membuat PDF.");
+        } finally {
+          button.disabled = false;
+          button.textContent = "Unduh Tabel PDF";
+        }
+      }
+
+      downloadPdfButton.addEventListener("click", generatePdf);
     </script>
   </body>
 </html>
