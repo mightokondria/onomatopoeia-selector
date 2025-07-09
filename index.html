@@ -547,6 +547,12 @@
             head: [tableColumns],
             body: tableRows,
             theme: "grid",
+            headStyles: {
+              fillColor: [255, 255, 255], // Warna latar putih
+              textColor: [0, 0, 0], // Warna teks hitam
+              lineColor: [44, 62, 80], // Warna garis
+              lineWidth: 0.1,
+            },
             didDrawCell: (data) => {
               if (data.section === "body" && data.column.index === 1) {
                 // Menulis nama file di atas gambar
@@ -588,6 +594,7 @@
             },
             styles: {
               valign: "middle",
+              lineColor: [44, 62, 80], // Warna garis
             },
           });
 
